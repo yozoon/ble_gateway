@@ -6,3 +6,11 @@ loglevel=20
 host=localhost
 username=username
 password=password
+
+[InfluxDB]
+enabled=1
+host=localhost
+port=8086
+username=username
+password=password
+database=environmental_data

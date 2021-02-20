@@ -1,6 +1,7 @@
 from typing import Callable
 
 import paho.mqtt.client as mqtt
+from influxdb import InfluxDBClient
 
 class SensorDevice:
     def __init__(self, address: str, data_uuid: str, data_callback: Callable):
@@ -9,20 +10,50 @@ class SensorDevice:
         self.data_callback = data_callback
 
 
-def callback_htu(mqtt_client: mqtt.Client, sender: int, data: bytearray):
+def callback_htu(mqtt_client: mqtt.Client, ifdb: InfluxDBClient, sender: int, data: bytearray):
     if len(data) == 4:
         temperature = int.from_bytes(data[0:2], byteorder='little') / 100
         humidity = int.from_bytes(data[2:4], byteorder='little') / 100
         mqtt_client.publish('temperature', payload=f'{temperature:.2f}')
         mqtt_client.publish('humidity', payload=f'{humidity:.2f}')
+        json_body = [
+            {
+                'measurement': 'temperature',
+                'fields': {
+                    'value': temperature
+                }
+            },
+            {
+                'measurement': 'humidity',
+                'fields': {
+                    'value': humidity
+                }
+            }
+        ]
+        ifdb.write_points(json_body)
 
 
-def callback_airquality(mqtt_client: mqtt.Client, sender: int, data: bytearray):
+def callback_airquality(mqtt_client: mqtt.Client, ifdb: InfluxDBClient, sender: int, data: bytearray):
     if len(data) == 4:
         eco2 = int.from_bytes(data[0:2], byteorder='big')
         tvoc = int.from_bytes(data[2:4], byteorder='big')
         mqtt_client.publish('eco2', payload=f'{eco2}')
         mqtt_client.publish('tvoc', payload=f'{tvoc}')
+        json_body = [
+            {
+                'measurement': 'eco2',
+                'fields': {
+                    'value': eco2
+                }
+            },
+            {
+                'measurement': 'tvoc',
+                'fields': {
+                    'value': tvoc
+                }
+            }
+        ]
+        ifdb.write_points(json_body)
 
 
 sensors = [
