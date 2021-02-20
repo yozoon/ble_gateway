@@ -1,27 +1,28 @@
-import os
+#!/usr/bin/env python3
+
 import asyncio
 import logging
+import configparser
 from functools import partial
 
-from dotenv import load_dotenv
 from bleak import BleakClient, discover
 import paho.mqtt.client as mqtt
 
 from sensors import SensorDevice, sensors
 
-# Load the environment variables defined in the .env file
-load_dotenv()
+config = configparser.ConfigParser()
+config.read('gateway.ini')
 
 # Configure logging
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(config.getint('common', 'loglevel', fallback=30))
 
 
 # MQTT client
-mqtt_client = mqtt.Client()
-mqtt_client.username_pw_set(os.getenv('MQTT_USER'), os.getenv('MQTT_PASSWORD'))
 logging.info('Connecting to MQTT client...')
-mqtt_client.connect('localhost')
+mqtt_client = mqtt.Client()
+mqtt_client.username_pw_set(config['MQTT']['username'], config['MQTT']['password'])
+mqtt_client.connect(config['MQTT']['host'])
 
 async def device_handler(device: SensorDevice):
     """ Device Handler

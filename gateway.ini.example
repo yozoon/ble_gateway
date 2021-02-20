@@ -1,0 +1,8 @@
+[common]
+# 20 -> INFO
+loglevel=20
+
+[MQTT]
+host=localhost
+username=username
+password=password
