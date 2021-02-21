@@ -48,7 +48,7 @@ async def device_handler(device):
         logger.warning(e)
     finally:
         await client.disconnect()
-    # Wait for one second
+    # Wait for ten seconds
     await asyncio.sleep(10)
     # Restart this coroutine
     await device_handler(device)
