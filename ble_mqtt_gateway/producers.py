@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 import yaml
 
+
 @dataclass
 class SensorData:
     name: str
@@ -10,6 +11,11 @@ class SensorData:
 
 class Sensor(yaml.YAMLObject):
     yaml_tag = u'!Sensor'
+    known_types = {
+        'int': int,
+        'float': float,
+        'str': str,
+    }
     def register_publishers(self, publishers: list):
         self.publishers = publishers
 
@@ -17,7 +23,7 @@ class Sensor(yaml.YAMLObject):
         if len(data) == self.data_length:
             sensor_data = []
             for d in self.value_definitions:
-                value = d['scale'] * int.from_bytes(data[d['from']:d['to']], byteorder=d['byteorder'])
+                value = Sensor.known_types[d['dtype']](d['scale'] * int.from_bytes(data[d['from']:d['to']], byteorder=d['byteorder']))
                 sensor_data.append(SensorData(name=d['name'], tag=d['tag'], value=value))
             self.__publish(sensor_data)
 

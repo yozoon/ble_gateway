@@ -3,10 +3,10 @@ Description=Gateway service that receives data from BLE sensors and sends them t
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/ble_mqtt_gateway
+ExecStart=/usr/local/bin/ble_mqtt_gateway -c /etc/ble_mqtt_gateway/config.yaml
 RestartSec=10
 Restart=always
-User=nobody
+User=bluetooth
 
 [Install]
 Requires=bluetooth.target

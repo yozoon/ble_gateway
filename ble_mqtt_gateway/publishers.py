@@ -30,7 +30,7 @@ class MQTTPublisher(yaml.YAMLObject, Publisher, metaclass=PublisherMeta):
 
     def publish(self, data: list):
         for d in data:
-            self.mqtt_client.publish(d.name, payload=f'{d.value:.2f}')
+            self.mqtt_client.publish(d.name, payload=f'{d.value}')
 
 
 class InfluxDBPublisher(yaml.YAMLObject, Publisher, metaclass=PublisherMeta):
