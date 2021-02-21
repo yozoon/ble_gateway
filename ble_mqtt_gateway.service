@@ -3,11 +3,10 @@ Description=Gateway service that receives data from BLE sensors and sends them t
 
 [Service]
 Type=simple
-ExecStart=/home/pi/ble/ble_mqtt_gateway.py
-WorkingDirectory=/home/pi/ble/
+ExecStart=/usr/bin/ble_mqtt_gateway
 RestartSec=10
 Restart=always
-User=pi
+User=nobody
 
 [Install]
 Requires=bluetooth.target

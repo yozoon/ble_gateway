@@ -1,14 +1,22 @@
 from abc import ABC, abstractmethod
 
+import yaml
 from paho.mqtt.client import Client as MQTTClient
 from influxdb import InfluxDBClient
+
 
 class Publisher(ABC):
     @abstractmethod
     def publish(self, data: list):
         pass
 
-class MQTTPublisher(Publisher):
+
+class PublisherMeta(type(yaml.YAMLObject), type(Publisher)):
+    pass
+
+
+class MQTTPublisher(yaml.YAMLObject, Publisher, metaclass=PublisherMeta):
+    yaml_tag = u'!MQTTPublisher'
     # Constructor is not actually required for pyyaml object creation
     def __init__(self, host, username, password):
         self.host = host
@@ -24,7 +32,9 @@ class MQTTPublisher(Publisher):
         for d in data:
             self.mqtt_client.publish(d.name, payload=f'{d.value:.2f}')
 
-class InfluxDBPublisher(Publisher):
+
+class InfluxDBPublisher(yaml.YAMLObject, Publisher, metaclass=PublisherMeta):
+    yaml_tag = u'!InfluxDBPublisher'
     def __init__(self, host, port, database, username, password):
         self.host = host
         self.port = port

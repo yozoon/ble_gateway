@@ -3,10 +3,22 @@
 import sys
 import logging
 import asyncio
-from functools import partial
+from argparse import ArgumentParser
 
 import yaml
-from bleak import BleakClient, discover
+from bleak import BleakClient
+
+from .publishers import *
+from .producers import *
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.StreamHandler(sys.stdout))
+
+parser = ArgumentParser(description="Gateway service that connects BLE devices with data publishers.")
+parser.add_argument("-c", "--config", type=str, dest="config_file", required=True,
+                    help="path to the config file")
+
+args = parser.parse_args()
 
 async def device_handler(device):
     """ Device Handler
@@ -42,14 +54,12 @@ async def device_handler(device):
     await device_handler(device)
 
 
-if __name__ == '__main__':
-    with open('config.yaml', 'r') as f:
+def main():
+    with open(args.config_file, 'r') as f:
         config = yaml.load(f, Loader=yaml.Loader)
 
     # Configure logging
-    logger = logging.getLogger(__name__)
     logger.setLevel(config['loglevel'])
-    logger.addHandler(logging.StreamHandler(sys.stdout))
 
     # Activate publishers
     logger.info('Activating publishers...')
@@ -78,3 +88,7 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         logger.info('\nExiting...')
         pass
+
+
+if __name__ == '__main__':
+    main()

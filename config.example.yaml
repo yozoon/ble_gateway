@@ -3,14 +3,14 @@ publishers:
   - # MQTT
     enabled: true
     instance:
-      !!python/object:publishers.MQTTPublisher
+      !MQTTPublisher
       host: localhost
       username: username
       password: password
   - # InfluxDB:
     enabled: true
     instance:
-      !!python/object:publishers.InfluxDBPublisher
+      !InfluxDBPublisher
       host: localhost
       port: 8086
       username: username
@@ -20,7 +20,7 @@ producers:
   - # HTU
     enabled: true
     instance:
-      !!python/object:producers.Sensor
+      !Sensor
       address: E3:BF:B3:23:85:F3
       data_uuid: 00002016-0000-1000-8000-00805f9b34fb
       data_length: 4
@@ -42,7 +42,7 @@ producers:
   - # Air Quality
     enabled: true
     instance:
-      !!python/object:producers.Sensor
+      !Sensor
       address: 11:22:33:AA:BB:CC
       data_uuid: 00001111-0000-1000-8000-00805f9b34fb
       data_length: 4

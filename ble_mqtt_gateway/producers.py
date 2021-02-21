@@ -1,12 +1,15 @@
 from dataclasses import dataclass
 
+import yaml
+
 @dataclass
 class SensorData:
     name: str
     tag: str
     value: float
 
-class Sensor:
+class Sensor(yaml.YAMLObject):
+    yaml_tag = u'!Sensor'
     def register_publishers(self, publishers: list):
         self.publishers = publishers
 
