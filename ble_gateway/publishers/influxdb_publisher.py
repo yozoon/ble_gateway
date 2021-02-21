@@ -1,39 +1,12 @@
-from abc import ABC, abstractmethod
+from .base import *
 
-import yaml
-from paho.mqtt.client import Client as MQTTClient
 from influxdb import InfluxDBClient
 
-
-class Publisher(ABC):
-    @abstractmethod
-    def publish(self, data: list):
-        pass
-
-
-class PublisherMeta(type(yaml.YAMLObject), type(Publisher)):
-    pass
-
-
-class MQTTPublisher(yaml.YAMLObject, Publisher, metaclass=PublisherMeta):
-    yaml_tag = u'!MQTTPublisher'
-    # Constructor is not actually required for pyyaml object creation
-    def __init__(self, host, username, password):
-        self.host = host
-        self.username = username
-        self.password = password
-
-    def activate(self):
-        self.mqtt_client = MQTTClient()
-        self.mqtt_client.username_pw_set(self.username, self.password)
-        self.mqtt_client.connect(self.host)
-
-    def publish(self, data: list):
-        for d in data:
-            self.mqtt_client.publish(d.name, payload=f'{d.value}')
-
-
 class InfluxDBPublisher(yaml.YAMLObject, Publisher, metaclass=PublisherMeta):
+    """ InfluxDB Publisher
+
+    Publishing service that sends data to an InfluxDB instance.
+    """
     yaml_tag = u'!InfluxDBPublisher'
     def __init__(self, host, port, database, username, password):
         self.host = host

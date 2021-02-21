@@ -53,12 +53,12 @@ producers:
           to: 2
           byteorder: big
           scale: 1
-          dtype: float
+          dtype: int
         - name: tvoc
           tag: ''
           from: 2
           to: 4
           byteorder: big
           scale: 1
-          dtype: float
+          dtype: int
       

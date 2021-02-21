@@ -1,0 +1,14 @@
+[Unit]
+Description=Gateway service that connects BLE devices with data publishers.
+After=bluetooth.target
+Wants=bluetooth.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/ble_gateway -c /etc/ble_gateway/config.yaml
+RestartSec=10
+Restart=always
+User=bluetooth
+
+[Install]
+WantedBy=multi-user.target
