@@ -1,0 +1,64 @@
+loglevel: 20
+publishers:
+  - # MQTT
+    enabled: true
+    instance:
+      !!python/object:publishers.MQTTPublisher
+      host: localhost
+      username: username
+      password: password
+  - # InfluxDB:
+    enabled: true
+    instance:
+      !!python/object:publishers.InfluxDBPublisher
+      host: localhost
+      port: 8086
+      username: username
+      password: password
+      database: database
+producers:
+  - # HTU
+    enabled: true
+    instance:
+      !!python/object:producers.Sensor
+      address: E3:BF:B3:23:85:F3
+      data_uuid: 00002016-0000-1000-8000-00805f9b34fb
+      data_length: 4
+      value_definitions:
+        - name: temperature
+          tag: ''
+          from: 0
+          to: 2
+          byteorder: little
+          scale: 0.01
+          dtype: float
+        - name: humidity
+          tag: ''
+          from: 2
+          to: 4
+          byteorder: little
+          scale: 0.01
+          dtype: float
+  - # Air Quality
+    enabled: true
+    instance:
+      !!python/object:producers.Sensor
+      address: 11:22:33:AA:BB:CC
+      data_uuid: 00001111-0000-1000-8000-00805f9b34fb
+      data_length: 4
+      value_definitions:
+        - name: eco2
+          tag: ''
+          from: 0
+          to: 2
+          byteorder: big
+          scale: 1
+          dtype: float
+        - name: tvoc
+          tag: ''
+          from: 2
+          to: 4
+          byteorder: big
+          scale: 1
+          dtype: float
+      
